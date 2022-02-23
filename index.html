@@ -17,19 +17,24 @@
 			<td>
 			  <span>起</span>
 			</td>
-			<td><input type="text"
+			<td style="width: 300px"><input type="text"
 						class="form-control form-control-sm" id="startDate"
 						name="startDate" style="width: 226px" autocomplete="off"
 						onchange="changeDatefunc(this.id, this.value)"></td>
 		  </tr>
 		  <tr>
-				<td>
+			<td>
 			  		<span>迄</span>
-				</td>
+			</td>
 				<td Style="display: flex;"><input type="text"
 						class="form-control form-control-sm" id="endDate" name="endDate"
 						style="width: 226px" autocomplete="off"
 						onchange="changeDatefunc(this.id, this.value)"></td>
+		  </tr>
+		  <tr>
+			<td colspan="2">
+				<input id="checkFlag" type="checkbox" name="checkFlag" value="1">扣除國定假日和週六日	
+			</td>
 		  </tr>
 		  <tr>
 				<td colspan="2">

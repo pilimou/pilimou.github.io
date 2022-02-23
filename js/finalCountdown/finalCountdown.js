@@ -75,7 +75,15 @@
 			//計算相隔日期裡面的六日
 			let holday = getHoliday(diffDay);
 			//console.log("holday = " + holday);
+			
+			if($("#checkFlag").prop("checked")){
 
+			} else {
+				na_holiday = 0;
+				holday = 0;
+			}
+			
+		
 			countdownDay = diffDay - na_holiday - holday;
             if(countdownDay == 0){
                 alert("沒有工作天");
