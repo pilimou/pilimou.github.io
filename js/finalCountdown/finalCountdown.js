@@ -97,7 +97,7 @@
 			let offsetTime = (endTime - nowTime) / 1000; // ** 以秒為單位
 			let sec = parseInt(offsetTime % 60); // 秒
 			let min = parseInt((offsetTime / 60) % 60); // 分
-			let hr = parseInt(offsetTime / 60 / 60); // 時
+			let hr = parseInt((offsetTime / 60 / 60) % 24); // 時
             let day = parseInt(offsetTime / 60 / 60 / 24);
 			$("#contdown").text(day + "天" + appendZero(hr) + "時" + appendZero(min) + "分" + (sec) + "秒");
 		}
