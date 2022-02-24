@@ -46,6 +46,9 @@
 		    $( "#endDate" ).val(d.getFullYear() + '-' + appendZero(d.getMonth() + 1) + '-' + appendZero(d.getDate()));
 		    $("#startDate").data('datepicker').selectDate(new Date());
 		    $("#endDate").data('datepicker').selectDate(new Date());
+
+			$("#startDate").prop("disabled", "disabled");
+			$("#checkFlag").prop("checked", true);
      	}
 		//國定假日(不包含六日)
 		const national_holiday = ["2022-01-31", 
@@ -58,7 +61,11 @@
 
 		let countdownDay;
 		let endTime
+		let interval;
+		let interval_2;
+		let addDay;
 	  	$("#query").click(function(){
+
 		  	//檢查格式
 		  	if(!checkDate()){
 			  	return;
@@ -82,27 +89,105 @@
 				na_holiday = 0;
 				holday = 0;
 			}
-			
 		
 			countdownDay = diffDay - na_holiday - holday;
             if(countdownDay == 0){
                 alert("沒有工作天");
                 return;
             }
-			let nowTime = new Date();
-			endTime = new Date(nowTime.getFullYear(), nowTime.getMonth(), nowTime.getDate());
-			endTime.setDate(nowTime.getDate() + countdownDay);
-			
-			setInterval(finalCountdown, 1000);
+
+			endTime = new Date(startDate);
+			endTime.setDate(endTime.getDate() + countdownDay);
+			if($("#checkFlag").prop("checked")){
+				clearInterval(interval_2);
+				interval = setInterval(finalCountdown, 1000);
+			} else {
+				clearInterval(interval);
+				interval_2 = setInterval(finalCountdown_2, 1000);
+			}
 			
 	  	});
-
+		
+		let between_holiday;
+		let fozenDay = 0;
+		let fozenFlag = true;
+		let show = null;
+		let now;
 		function finalCountdown(){
+			clearInterval(interval_2);
+			let time = new Date();
+			let nowTime = time.getTime();
+			let time_str = time.getFullYear() + "-" + appendZero(time.getMonth()+1) + "-" + appendZero(time.getDate());
+			
+			//開始倒數當天等於假日(show還沒資料)
+			if(!show && (time_str == between_holiday[0] || time.getDay() == 0 || time.getDay() == 6 )){
+				let offsetTime = (endTime.getTime() - nowTime) / 1000; // ** 以秒為單位
+            	let day = parseInt(offsetTime / 60 / 60 / 24);
+				show = day + "天";
+				$("#contdown").text(show + "00時" + "00分" + "00秒");
+				$("#holiday").text("放假中");
+			}
+
+			if(between_holiday.length > 0){
+
+				if( now != time_str && (time_str == between_holiday[0] || time.getDay() == 0 || time.getDay() == 6 )){
+					now = time_str;
+					fozenDay += 1;
+					$("#contdown").text(show + "00時" + "00分" + "00秒");
+					$("#holiday").text("放假中");
+					return;
+				} else if(time_str > between_holiday[0]){
+					between_holiday.shift();
+				}
+
+			} else if( now != time_str && (time.getDay() == 0 || time.getDay() == 6)){
+				fozenDay += 1;
+				$("#contdown").text(show + "00時" + "00分" + "00秒");
+				$("#holiday").text("放假中");
+				return;
+			}
+
+			if(between_holiday.length > 0){
+
+				if( (time_str == between_holiday[0] || time.getDay() == 0 || time.getDay() == 6 )){
+					$("#contdown").text(show + "00時" + "00分" + "00秒");
+					$("#holiday").text("放假中");
+					return;
+				} else if(time_str > between_holiday[0]){
+					between_holiday.shift();
+				}
+
+			} else if((time.getDay() == 0 || time.getDay() == 6)){
+				$("#contdown").text(show + "00時" + "00分" + "00秒");
+				$("#holiday").text("放假中");
+				return;
+			}
+
+
+			if(fozenDay > 0){
+				endTime.setDate(endTime.getDate() + fozenDay);
+				fozenDay = 0;
+			}
+			// 倒數計時: 差值
+			let offsetTime = (endTime.getTime() - nowTime) / 1000; // ** 以秒為單位
+			let sec = parseInt(offsetTime % 60); // 秒
+			let min = parseInt((offsetTime / 60) % 60); // 分
+			let hr = parseInt((offsetTime / 60 / 60) % 24); // 時
+            let day = parseInt(offsetTime / 60 / 60 / 24);
+			show = day + "天";
+			$("#contdown").text(show + appendZero(hr) + "時" + appendZero(min) + "分" + appendZero(sec) + "秒");
+			$("#holiday").text("");
+		
+			
+		}
+
+		function finalCountdown_2(){
+			clearInterval(interval);
 			let time = new Date();
 			let nowTime = time.getTime();
 			endTime.getTime();
 			// 倒數計時: 差值
-			let offsetTime = (endTime - nowTime) / 1000; // ** 以秒為單位
+			let offsetTime = (endTime.getTime() - nowTime) / 1000; // ** 以秒為單位
 			let sec = parseInt(offsetTime % 60); // 秒
 			let min = parseInt((offsetTime / 60) % 60); // 分
 			let hr = parseInt((offsetTime / 60 / 60) % 24); // 時
@@ -139,9 +224,11 @@
 		}
 		//計算相隔日期裡面的國定假日天數
 		function getNa_holiday(){
+			between_holiday = [];
 			let na_holiday = 0;
 			$.each(national_holiday, function(index, value){
 				if(moment(value).isBetween(startDate, endDate) || value == startDate){
+					between_holiday.push(value);
 					na_holiday += 1;
 				}
 			});
@@ -159,8 +246,6 @@
 					holday++; 
 				}
 			}  
-			//最後一天不算(如果是假日)
-			let lastDay = new Date(endDate);
 			
 			return holday;
 		}
