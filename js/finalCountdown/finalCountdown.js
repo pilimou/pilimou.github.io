@@ -1,5 +1,22 @@
 
-      	var d = new Date();
+      	function isMobile() {
+
+			try{ document.createEvent("TouchEvent"); return true; }
+		  
+			catch(e){ return false;}
+		  
+		}
+
+		if(isMobile()){
+			$(".rwd_slider_container_wrapper").css("width", "90%");
+			$(".initImg").css("width", "100%");
+		} else{
+			$(".rwd_slider_container_wrapper").css("width", 400);
+			$(".initImg").css("width", 360);
+		}
+		
+		
+		var d = new Date();
 	    var endDay = new Date();
 	    endDay.setDate(d.getDate() - 1);
 	
@@ -41,6 +58,7 @@
 
       	init();
       	function init(){
+
         	//預設input顯示和datepicker日期
 		    $( "#startDate" ).val(d.getFullYear() + '-' + appendZero(d.getMonth() + 1) + '-' + appendZero(d.getDate()));
 		    $( "#endDate" ).val(d.getFullYear() + '-' + appendZero(d.getMonth() + 1) + '-' + appendZero(d.getDate()));
