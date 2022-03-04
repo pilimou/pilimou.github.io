@@ -10,9 +10,11 @@
 		if(isMobile()){
 			$(".rwd_slider_container_wrapper").css("width", "90%");
 			$(".initImg").css("width", "100%");
+			$(".initImg").css("height", "80%");
 		} else{
 			$(".rwd_slider_container_wrapper").css("width", 400);
 			$(".initImg").css("width", 360);
+			$(".initImg").css("height", 280);
 		}
 		
 		
