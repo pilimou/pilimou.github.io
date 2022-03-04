@@ -152,6 +152,7 @@
 }
 
 .rwd_slider_container_wrapper {
+    padding-bottom:40px;
     max-width: 100%;
     box-sizing: border-box;
     box-shadow: #666 0 0 5px;
