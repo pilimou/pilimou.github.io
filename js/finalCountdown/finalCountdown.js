@@ -118,6 +118,9 @@
             }
 
 			endTime = new Date(startDate);
+			endTime.setHours(0);
+			endTime.setMinutes(0);
+			endTime.setSeconds(0);
 			endTime.setDate(endTime.getDate() + countdownDay);
 			if($("#checkFlag").prop("checked")){
 				clearInterval(interval_2);
