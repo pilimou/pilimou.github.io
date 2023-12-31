@@ -96,7 +96,7 @@ function prizeRoll() {
   gift_id = Math.floor(1+Math.random()*prizeList.length);        
   console.log(gift_id);
   prizeList.forEach((item,i)=>{
-    if(item.id == gift_id) index = i; // 判斷中獎位置
+    if(item.id == gift_id) index = 1; // 判斷中獎位置
   });
   rotating();				
 };
