@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link href="../css/jquery-ui.min.css" rel="stylesheet">
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/datepicker.css" rel="stylesheet">
+    <link href="../fontawesome-free-5.15.4-web/css/all.css" rel="stylesheet">
+	<link href="../css/fish/mou.css" rel="stylesheet">
+    <title>YO</title>
+  </head>
+  <body>
+	<div class="cd_container" style="padding-left: 20px;padding-top: 20px;">
+		<table id="mainTable" border="0">
+		  <tr>
+			<td>
+			  <span>起</span>
+			</td>
+			<td style="width: 425px"><input type="text"
+						class="form-control form-control-sm" id="startDate"
+						name="startDate" style="width: 226px" autocomplete="off"
+						onchange="changeDatefunc(this.id, this.value)"></td>
+		  </tr>
+		  <tr>
+			<td>
+			  		<span>迄</span>
+			</td>
+				<td Style="display: flex;"><input type="text"
+						class="form-control form-control-sm" id="endDate" name="endDate"
+						style="width: 226px" autocomplete="off"
+						onchange="changeDatefunc(this.id, this.value)"></td>
+		  </tr>
+		  <tr>
+			<td colspan="2">
+				<input id="checkFlag" type="checkbox" name="checkFlag" value="1">扣除國定假日和週六日	
+			</td>
+		  </tr>
+		  <tr>
+				<td colspan="2">
+					<button id="query">查詢</button>
+			  </td>
+		  </tr>
+		</table>
+	</div>
+	<div class="cd_container" style="padding-left: 20px;">
+		<h1><span id = "contdown"></span></h1>
+		<h1><span id = "holiday"></span></h1>
+	</div>
+	
+	<div class="rwd_slider_container_wrapper">
+		<div class="rwd_slider_container"> 
+		<div class="slider_container">
+			<div>
+				<img src="../image/LINE_ALBUM_220225.jpg" alt="pure css3 slider" width="360" height="280" class="initImg" />
+				<span class="info">肚肚</span>
+			</div>
+			<div>
+				<img src="../image/LINE_ALBUM_220227.jpg" alt="pure css3 slider" width="320" height="280" class="initImg"/>
+				<span class="info">皮蛋 肚肚</span>
+			</div>
+			<div>
+				<img src="../image/LINE_ALBUM_220304.jpg" alt="pure css3 slider" width="320" height="280" class="initImg"/>
+				<span class="info">肚肚</span>
+			</div>
+			<div>
+				<img src="../image/LINE_ALBUM_220305.jpg" alt="pure css3 slider" width="320" height="280" class="initImg"/>
+				<span class="info">白白 黃黃 皮蛋</span>
+			</div>
+			<div>
+				<img src="../image/LINE_ALBUM_220307.jpg" alt="pure css3 slider" width="320" height="280" class="initImg"/>
+				<span class="info">皮蛋</span>
+			</div>
+			<div>
+				<img src="../image/LINE_ALBUM_可愛鬼們_220306.jpg" alt="pure css3 slider" width="320" height="280" class="initImg"/>
+				<span class="info">白白</span>
+			</div>
+			<div>
+				<img src="../image/LINE_ALBUM_220308.jpg" alt="pure css3 slider" width="320" height="280" class="initImg"/>
+				<span class="info">肚肚</span>
+			</div>
+		
+		</div>
+		</div>
+		</div>
+
+    <script type="text/javascript" src="../js/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="../js/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="../js/moment.js"></script>
+    <script type="text/javascript" src="../js/datepicker.min.js"></script>
+    <script type="text/javascript" src="../js/datepicker.zh.js"></script>
+    <script type="text/javascript" src="../js/bootstrap-3.3.7.min.js"></script>
+	<script type="text/javascript" src="../js/finalCountdown/finalCountdown.js"></script>
+  </body>
+</html>

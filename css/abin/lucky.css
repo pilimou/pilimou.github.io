@@ -1,0 +1,83 @@
+.luckBg{
+    background: #ffcf49;
+    width: 20rem;
+    height:20rem;
+    border-radius: 50%;
+    margin:0 auto;
+    padding:5px;
+  }
+  .luckWhellBg,.luckWhellBgMain{
+          background: #fff;
+          width: 100%;
+          height:100%;
+          border-radius: 50%;
+          position:relative;
+          overflow: hidden;			
+      }
+  .rotateStyle{
+    -webkit-transition: transform 5000ms ease-in-out;
+    transition: transform 5000ms ease-in-out;
+  }
+  .luckWhellSector{
+          position:absolute;
+          top: 0; 
+          right: 0;
+          transform-origin: 0% 100%; 
+          border:1px solid #facd89;
+          border-right:0;
+          border-top:0;
+          box-sizing: border-box;			
+      }		
+      
+      .luckWhellSector:nth-child(2n){
+          position:absolute;
+          background: #fff3d8;
+      }
+  .wheel-main{
+          position:absolute;
+          left:0;
+          right:0;
+          top:0;
+          bottom:0;
+          width: 100%;
+          height:100%;
+          z-index: 2;
+      }
+  .prize-list {
+          width: 100%;
+          height: 100%;
+          position: relative;	   
+          
+      }
+  .prize-item {
+            position: absolute;
+            left:50%;
+            height:50%;	
+            padding-top:15px;
+            box-sizing: border-box;
+            text-align: center;
+            transform-origin: 50% 100%;  
+            color:#F83C0E;
+          }
+      .prize_point{
+          position:absolute;
+          left:50%;
+          background: #ff3a60;
+          width: 4rem;
+          height:4rem;
+          top:50%;
+          margin-left:-2rem;
+          margin-top:-2rem;	
+          border-radius: 50%;
+      }
+      .prize_point::after{
+          position:absolute;
+          left:50%;
+          top:-1.5rem;
+          width:0;
+          height:0;
+          margin-left:-1rem;			
+           border: 1rem solid;
+          border-color: transparent transparent #ff3a60;
+          content: '';
+      }
