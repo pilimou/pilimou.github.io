@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub Pages 與 Google Apps Script 互動</title>
+    <!-- 引入 Tailwind CSS 以簡化樣式 -->
+    <script src="[https://cdn.tailwindcss.com](https://cdn.tailwindcss.com)"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f3f4f6;
+            padding: 20px;
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+        }
+        h1 {
+            font-size: 2.25rem; /* text-4xl */
+            font-weight: 700; /* font-bold */
+            color: #1f2937; /* text-gray-900 */
+            margin-bottom: 20px;
+        }
+        .section {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e5e7eb;
+        }
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .btn {
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .btn-primary {
+            background-color: #4f46e5; /* indigo-600 */
+            color: #ffffff;
+        }
+        .btn-primary:hover {
+            background-color: #4338ca; /* indigo-700 */
+            transform: translateY(-2px);
+        }
+        .btn-secondary {
+            background-color: #10b981; /* emerald-500 */
+            color: #ffffff;
+        }
+        .btn-secondary:hover {
+            background-color: #059669; /* emerald-600 */
+            transform: translateY(-2px);
+        }
+        .response-box {
+            background-color: #f9fafb; /* gray-50 */
+            border: 1px solid #d1d5db; /* gray-300 */
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 25px;
+            min-height: 100px;
+            text-align: left;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            color: #374151; /* gray-700 */
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+            font-size: 0.875rem; /* text-sm */
+        }
+        .loading-indicator {
+            margin-top: 15px;
+            color: #6b7280; /* gray-500 */
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>與 Google Apps Script Web App 互動</h1>
+        <p class="text-gray-600 mb-6">點擊按鈕向你的 Apps Script Web App 發送請求，並查看響應。</p>
+
+        <!-- 設定你的 Apps Script Web App URL -->
+        <script>
+            // *** 請將這裡替換為你的 Google Apps Script Web App URL ***
+            // 例如：const WEB_APP_URL = "[https://script.google.com/macros/s/AKfycbxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx/exec](https://script.google.com/macros/s/AKfycbxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx/exec)";
+            const WEB_APP_URL = "[https://script.google.com/macros/s/AKfycbzYLUvGaHxy1yk9AVV2ysYsWp8pfgkvIq9sNjbXwyqfIENQNiEveHg84WrohVTbOgTv/exec](https://script.google.com/macros/s/AKfycbzYLUvGaHxy1yk9AVV2ysYsWp8pfgkvIq9sNjbXwyqfIENQNiEveHg84WrohVTbOgTv/exec)";
+
+            // 用於顯示響應的元素
+            const fetchResponseDiv = document.getElementById('fetchResponse');
+            const xhrResponseDiv = document.getElementById('xhrResponse');
+
+            // 顯示載入狀態
+            function showLoading(elementId) {
+                document.getElementById(elementId).innerHTML = '<div class="loading-indicator">載入中...</div>';
+            }
+
+            // 清除載入狀態
+            function clearLoading(elementId) {
+                const loadingDiv = document.querySelector(`#${elementId} .loading-indicator`);
+                if (loadingDiv) {
+                    loadingDiv.remove();
+                }
+            }
+
+            // 處理和顯示響應
+            function displayResponse(elementId, data, error = false) {
+                const responseDiv = document.getElementById(elementId);
+                clearLoading(elementId);
+                if (error) {
+                    responseDiv.innerHTML = `<p class="text-red-600">錯誤: ${JSON.stringify(data, null, 2)}</p>`;
+                } else {
+                    responseDiv.innerHTML = `<p><strong>響應:</strong></p><pre>${JSON.stringify(data, null, 2)}</pre>`;
+                }
+            }
+
+            // --- 使用 Fetch API ---
+            async function sendFetchGetRequest() {
+                if (WEB_APP_URL === "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE") {
+                    alert("請先在程式碼中設定你的 Google Apps Script Web App URL！");
+                    return;
+                }
+                showLoading('fetchResponse');
+                const params = new URLSearchParams({
+                    name: "GitHubPagesUser",
+                    message: "HelloFromFetchGET"
+                }).toString();
+                const urlWithParams = `${WEB_APP_URL}?${params}`;
+
+                try {
+                    const response = await fetch(urlWithParams);
+                    if (!response.ok) {
+                        throw new Error(`HTTP 錯誤! 狀態: ${response.status}`);
+                    }
+                    // 嘗試解析為 JSON，如果不是 JSON 則作為文本處理
+                    const contentType = response.headers.get("content-type");
+                    if (contentType && contentType.includes("application/json")) {
+                        const data = await response.json();
+                        displayResponse('fetchResponse', data);
+                    } else {
+                        const text = await response.text();
+                        displayResponse('fetchResponse', { rawText: text });
+                    }
+                } catch (error) {
+                    console.error('Fetch GET 請求失敗:', error);
+                    displayResponse('fetchResponse', { error: error.message }, true);
+                }
+            }
+
+            async function sendFetchPostRequest() {
+                if (WEB_APP_URL === "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE") {
+                    alert("請先在程式碼中設定你的 Google Apps Script Web App URL！");
+                    return;
+                }
+                showLoading('fetchResponse');
+                const postData = {
+                    email: "user@example.com",
+                    subject: "來自 GitHub Pages 的訊息",
+                    body: "這是一個使用 Fetch API 發送的 POST 請求。"
+                };
+
+                try {
+                    const response = await fetch(WEB_APP_URL, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json' // 告訴 Apps Script 我們發送的是 JSON
+                        },
+                        body: JSON.stringify(postData) // 將 JavaScript 物件轉換為 JSON 字串
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP 錯誤! 狀態: ${response.status}`);
+                    }
+
+                    const contentType = response.headers.get("content-type");
+                    if (contentType && contentType.includes("application/json")) {
+                        const data = await response.json();
+                        displayResponse('fetchResponse', data);
+                    } else {
+                        const text = await response.text();
+                        displayResponse('fetchResponse', { rawText: text });
+                    }
+                } catch (error) {
+                    console.error('Fetch POST 請求失敗:', error);
+                    displayResponse('fetchResponse', { error: error.message }, true);
+                }
+            }
+
+            // --- 使用 XMLHttpRequest (XHR) ---
+            function sendXHRGetRequest() {
+                if (WEB_APP_URL === "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE") {
+                    alert("請先在程式碼中設定你的 Google Apps Script Web App URL！");
+                    return;
+                }
+                showLoading('xhrResponse');
+                const params = new URLSearchParams({
+                    id: "12345",
+                    query: "XHR_GET_Test"
+                }).toString();
+                const urlWithParams = `${WEB_APP_URL}?${params}`;
+
+                const xhr = new XMLHttpRequest();
+                xhr.open('GET', urlWithParams, true); // true 表示異步請求
+
+                xhr.onload = function() {
+                    clearLoading('xhrResponse');
+                    if (xhr.status >= 200 && xhr.status < 300) {
+                        try {
+                            // 嘗試解析為 JSON
+                            const data = JSON.parse(xhr.responseText);
+                            displayResponse('xhrResponse', data);
+                        } catch (e) {
+                            // 如果不是 JSON，則作為文本處理
+                            displayResponse('xhrResponse', { rawText: xhr.responseText });
+                        }
+                    } else {
+                        displayResponse('xhrResponse', { status: xhr.status, statusText: xhr.statusText, response: xhr.responseText }, true);
+                    }
+                };
+
+                xhr.onerror = function() {
+                    clearLoading('xhrResponse');
+                    console.error('XHR GET 請求失敗:', xhr.statusText);
+                    displayResponse('xhrResponse', { error: '網路錯誤或請求被阻止' }, true);
+                };
+
+                xhr.send();
+            }
+
+            function sendXHRPostRequest() {
+                if (WEB_APP_URL === "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE") {
+                    alert("請先在程式碼中設定你的 Google Apps Script Web App URL！");
+                    return;
+                }
+                showLoading('xhrResponse');
+                const postData = {
+                    userId: "abc-123",
+                    action: "submit_report",
+                    report: "這是一個使用 XMLHttpRequest 發送的 POST 請求。"
+                };
+
+                const xhr = new XMLHttpRequest();
+                xhr.open('POST', WEB_APP_URL, true);
+                xhr.setRequestHeader('Content-Type', 'application/json'); // 告訴 Apps Script 我們發送的是 JSON
+
+                xhr.onload = function() {
+                    clearLoading('xhrResponse');
+                    if (xhr.status >= 200 && xhr.status < 300) {
+                        try {
+                            const data = JSON.parse(xhr.responseText);
+                            displayResponse('xhrResponse', data);
+                        } catch (e) {
+                            displayResponse('xhrResponse', { rawText: xhr.responseText });
+                        }
+                    } else {
+                        displayResponse('xhrResponse', { status: xhr.status, statusText: xhr.statusText, response: xhr.responseText }, true);
+                    }
+                };
+
+                xhr.onerror = function() {
+                    clearLoading('xhrResponse');
+                    console.error('XHR POST 請求失敗:', xhr.statusText);
+                    displayResponse('xhrResponse', { error: '網路錯誤或請求被阻止' }, true);
+                };
+
+                xhr.send(JSON.stringify(postData)); // 將 JavaScript 物件轉換為 JSON 字串
+            }
+        </script>
+
+        <div class="section">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">使用 Fetch API</h2>
+            <div class="button-group">
+                <button onclick="sendFetchGetRequest()" class="btn btn-primary">
+                    發送 GET 請求 (Fetch)
+                </button>
+                <button onclick="sendFetchPostRequest()" class="btn btn-primary">
+                    發送 POST 請求 (Fetch)
+                </button>
+            </div>
+            <div id="fetchResponse" class="response-box">
+                <!-- Fetch API 響應將顯示在這裡 -->
+            </div>
+        </div>
+
+        <div class="section">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">使用 XMLHttpRequest (XHR)</h2>
+            <div class="button-group">
+                <button onclick="sendXHRGetRequest()" class="btn btn-secondary">
+                    發送 GET 請求 (XHR)
+                </button>
+                <button onclick="sendXHRPostRequest()" class="btn btn-secondary">
+                    發送 POST 請求 (XHR)
+                </button>
+            </div>
+            <div id="xhrResponse" class="response-box">
+                <!-- XHR 響應將顯示在這裡 -->
+            </div>
+        </div>
+    </div>
+</body>
+</html>
